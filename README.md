@@ -1,9 +1,7 @@
 # mesh-to-desmos (fbx-to-desmos)
-An ASCII .FBX 3D model to 3D Desmos graph converter, coded by hand in HTML/CSS/JS.
+An ASCII .FBX 3D model to 3D Desmos graph converter, coded by hand in HTML/CSS/JS. The main branch is the code that I used for the 2026 Desmos Art Contest. Very simple, just some HTML and JavaScript without any CSS.
 
-**The main branch is the code that I used for the 2026 Desmos Art Contest. Very simple, just some HTML and JavaScript without any CSS.
-
-It's accessible at: https://mampuzha.org/mesh2desmos. Feel free to use it; I actually find it really helpful!**
+**It's accessible at: https://mampuzha.org/mesh2desmos. Feel free to use it; I actually find it really helpful!**
 
 
 
