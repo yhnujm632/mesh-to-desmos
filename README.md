@@ -7,4 +7,4 @@ An ASCII .FBX 3D model to 3D Desmos graph converter, coded by hand in HTML/CSS/J
 
 
 
-The binary-fbx-support branch is a work in progress. It will look nicer, since I am adding CSS to this branch. In order to add support for binary .FBX 3D models, along with other file formats, this will probably look along the lines of using another binary to ASCII conversion solution and interopping it with the HTML/CSS/JS client. This is going to be a fun challenge...
+*The binary-fbx-support branch is a work in progress. It will look nicer, since I am adding CSS to this branch. In order to add support for binary .FBX 3D models, along with other file formats, this will probably look along the lines of using another binary to ASCII conversion solution and interopping it with the HTML/CSS/JS client. This is going to be a fun challenge...*
