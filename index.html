@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <!--
+    CREDIT: Matthew Mampuzha, made between 12/20/2025 and 1/3/2026 (mm/dd/yyyy)
+
+    -->
+  <head>
+    <title>Mesh to Desmos</title>
+  </head>
+  <body>
+    <h1>Mesh to Desmos</h1>
+      <p>File format: Accepts <b>ASCII .fbx</b> files <b>only</b>.</p>
+      <p><i>IMPORTANT: Make sure your mesh file is triangulated before you use this tool. That basically means every face should be a triangle; no quadrilateral faces.</i></p>
+    <input type="file" id="file-input" name="file-input" />
+      <br />
+      <p id="text-info"></p>
+      <br />
+    <textarea id="inv-tan-data"></textarea>
+      <br />
+    <textarea id="return-data"></textarea>
+  </body>
+  <script>
+
+document.getElementById("file-input").addEventListener('change', function(event) {
+    var file = event.target.files[0]
+    if (file != null) {
+        var fileReader = new FileReader()
+        fileReader.onload = function() {
+            onfbxload(fileReader.result, file.name.substring(0, file.name.indexOf('.fbx')))
+        }
+        fileReader.onerror = () => {
+            alert("Error reading the file. Please try again.");
+        }
+        fileReader.readAsText(file)
+    }
+})
+
+function onfbxload(file, filename) {
+    file = file.substring(file.indexOf("; Object properties\n;------------------------------------------------------------------") + 89, file.indexOf("; Object connections\n;------------------------------------------------------------------"))
+    verticesData = file.substring(file.indexOf("Vertices: *"), file.indexOf("PolygonVertexIndex: *")).replaceAll("\t", "")
+    verticesData = verticesData.substring(verticesData.indexOf("a:") + 2, verticesData.indexOf("}")).replaceAll("\n", "").replaceAll(" ", "").split(",")
+    vertices = []
+    for (let i = 0; i < verticesData.length; i += 3) {
+        vertices.push([
+            verticesData[i],
+            verticesData[i + 1],
+            verticesData[i + 2],
+        ])
+    }
+    
+    polygonsData = file.substring(file.indexOf("PolygonVertexIndex: *"), file.indexOf("GeometryVersion:")).replaceAll("\t", "")
+    polygonsData = polygonsData.substring(polygonsData.indexOf("a:") + 2, polygonsData.indexOf("}")).replaceAll("\n", "").replaceAll(" ", "").split(",")
+    polygons = []
+    for (let i = 0; i < polygonsData.length; i += 3) {
+        polygons.push([
+            polygonsData[i],
+            polygonsData[i + 1],
+            Math.abs(polygonsData[i + 2]) - 1,
+        ])
+    }
+    
+    returnStr = "\\left["
+    
+    for (let i = 0; i < polygons.length - 1; i += 1) {
+        returnStr += "\\operatorname{triangle}\\left(" + getRotatedPoint(vertices[polygons[i][0]]) + ",\\ " + getRotatedPoint(vertices[polygons[i][1]]) + ",\\ " + getRotatedPoint(vertices[polygons[i][2]]) + "\\right),\\ "
+    }
+    returnStr += "\\operatorname{triangle}\\left(" + getRotatedPoint(vertices[polygons[polygons.length - 1][0]]) + ",\\ " + getRotatedPoint(vertices[polygons[polygons.length - 1][1]]) + ",\\ " + getRotatedPoint(vertices[polygons[polygons.length - 1][2]]) + "\\right)"
+    
+    returnStr += "\\right]"
+    
+    document.getElementById("text-info").innerHTML = "Copy and paste these two lines into your Desmos 3D project! IMPORTANT: The first text box has a function (inverse tangent but a full 2pi radians) that the second text box needs to work. If you have it once in your project, you don't need it again."
+    
+    document.getElementById("inv-tan-data").value = "i_{nvTan}\\left(x,\\ y\\right)=\\left\\{y=0:\\ \\left\\{x<0:\\pi+\\arctan\\left(\\frac{y}{x}\\right),\\arctan\\left(\\frac{y}{x}\\right)\\right\\},\\ \\left\\{y>0:\\left\\{x<0:\\pi+\\arctan\\left(\\frac{y}{x}\\right),\\arctan\\left(\\frac{y}{x}\\right)\\right\\},\\left\\{x<0:\\arctan\\left(\\frac{y}{x}\\right)+\\pi,\\ 2\\pi+\\arctan\\left(\\frac{y}{x}\\right)\\right\\}\\right\\}\\right\\}"
+    
+    document.getElementById("return-data").value = filename[0] + "_{" + filename.substring(1) + "}\\left(x,y,z,\\theta_{r}\\right) = " + returnStr
+    
+    
+    
+    
+}
+function getRotatedPoint(p) {
+    x = p[0]
+    y = p[1]
+    z = p[2]
+    str = `\\left(\\operatorname{distance}\\left(\\left(0,0\\right),\\left(${x},\\ ${y}\\right)\\right)\\cos\\left(\\theta_{r}+i_{nvTan}\\left(${x},\\ ${y}\\right)\\right)\\ +\\ x,\\ \\operatorname{distance}\\left(\\left(0,0\\right),\\left(${x},\\ ${y}\\right)\\right)\\sin\\left(\\theta_{r}+i_{nvTan}\\left(${x},\\ ${y}\\right)\\right)\\ +\\ y,\\ ${z}\\ +\\ z\\right)`
+    return str
+}
+
+    </script>
+</html>
